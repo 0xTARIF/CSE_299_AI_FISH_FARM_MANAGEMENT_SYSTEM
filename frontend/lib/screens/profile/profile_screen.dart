@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../providers/farm_provider.dart';
+import '../auth/login_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -65,6 +66,48 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         isLoading = false;
       });
     }
+  }
+
+  Future<void> _logout() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          "লগআউট",
+          style: _hindStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        content: Text("আপনি কি সত্যিই লগআউট করতে চান?", style: _hindStyle()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text("বাতিল", style: _hindStyle(color: Colors.black54)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              "লগআউট",
+              style: _hindStyle(
+                color: Colors.red.shade700,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    if (!mounted) return;
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (route) => false,
+    );
   }
 
   Future<void> updateProfile(
@@ -171,6 +214,31 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               ),
               onPressed: () => setState(() => isEditMode = true),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Logout Button
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: Colors.red.shade700, width: 1.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              icon: Icon(Icons.logout, color: Colors.red.shade700),
+              label: Text(
+                "লগআউট",
+                style: _hindStyle(
+                  color: Colors.red.shade700,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              onPressed: _logout,
             ),
           ),
 

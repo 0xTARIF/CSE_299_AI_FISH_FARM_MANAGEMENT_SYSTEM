@@ -352,13 +352,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       children: farms.asMap().entries.map((entry) {
         final farm = entry.value as Map<String, dynamic>;
-        final isActive = farm['status'] == 'active' ? true : false;
-        return _buildFarmCard(farm, isActive: isActive);
+        return _buildFarmCard(farm);
       }).toList(),
     );
   }
 
-  Widget _buildFarmCard(Map<String, dynamic> farm, {bool isActive = false}) {
+  Widget _buildFarmCard(Map<String, dynamic> farm) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -431,45 +430,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ],
-            ),
-          ),
-
-          // Status badge
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: isActive
-                    ? const Color(0xFFDCFCE7)
-                    : const Color(0xFFFEF9C3),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                isActive ? 'সক্রিয়' : 'সক্রিয়',
-                style: _hindStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: isActive
-                      ? const Color(0xFF16A34A)
-                      : const Color(0xFFCA8A04),
-                ),
-              ),
-            ),
-          ),
-
-          // Right accent bar
-          Container(
-            width: 5,
-            height: 82,
-            decoration: BoxDecoration(
-              color: isActive
-                  ? const Color(0xFF22C55E)
-                  : const Color(0xFFFACC15),
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(16),
-                bottomRight: Radius.circular(16),
-              ),
             ),
           ),
         ],
